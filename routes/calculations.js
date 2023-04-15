@@ -1,7 +1,9 @@
 const express = require("express");
 const User = require("../models/user.model.js");
 const Calculation = require("../models/calculation.model.js");
+const Sheets = require("../models/sheets.model.js");
 
+// var mongoose = require('mongoose');
 const router = express.Router();
 
 // Get all users
@@ -22,6 +24,37 @@ router.get("/getAll/:_id", async (req, res) => {
 router.post("/addExpense", async (req, res) => {
   try {
     const calculation = await Calculation.create(req.body);
+    if (calculation?.sheetId) {
+      const sheets = await Sheets.findOne({ _id: calculation?.sheetId });
+      if (sheets?._id) {
+        let newTotal = 0;
+        if (calculation?.expenseType === "CRED") {
+          newTotal = Number(sheets?.totalAmount) + Number(calculation?.expenseAmount);
+        } else {
+          newTotal = Number(sheets?.totalAmount) - Number(calculation?.expenseAmount);
+        }
+        const sendToServer = {
+          totalAmount: newTotal
+        }
+
+        try {
+          const id = { _id: calculation?.sheetId };
+          const sheets = await Sheets.findOneAndUpdate(id, sendToServer, {
+            new: true,
+          });
+        } catch (err) {
+          let message = "Unable to update the sheet. Try after sometime.";
+          if (err.name === "CastError") {
+            message = "Invalid ID format.";
+          }
+          const returnData = {
+            success: false,
+            message,
+          };
+        }
+      }
+    }
+
     const returnData = {
       success: true,
       message: "Expense added successfully.",
@@ -35,9 +68,10 @@ router.post("/addExpense", async (req, res) => {
       message: "Unable to add the expense. Try after sometime.",
     };
     res.status(500).json(returnData);
-  } finally {
-    await mongoose.connection.close();
   }
+  // finally {
+  //   await mongoose.connection.close();
+  // }
 });
 
 // Remove the expense
@@ -68,9 +102,10 @@ router.delete("/removeExpense/:_id", async (req, res) => {
       message,
     };
     res.status(500).json(returnData);
-  } finally {
-    mongoose.connection.close();
   }
+  // finally {
+  //   mongoose.connection.close();
+  // }
 });
 
 // Update the expense
@@ -103,9 +138,10 @@ router.put("/updateExpense/:_id", async (req, res) => {
       message,
     };
     res.status(500).json(returnData);
-  } finally {
-    mongoose.connection.close();
   }
+  // finally {
+  //   mongoose.connection.close();
+  // }
 });
 
 module.exports = router;

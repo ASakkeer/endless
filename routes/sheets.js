@@ -1,6 +1,6 @@
 const express = require("express");
 const Sheets = require("../models/sheets.model.js");
-
+var mongoose = require('mongoose');
 const router = express.Router();
 
 // Get all users
@@ -45,9 +45,10 @@ router.get("/getSheet/:_id", async (req, res) => {
       message,
     };
     res.status(500).json(returnData);
-  } finally {
-    mongoose.connection.close();
   }
+  // finally {
+  //   await mongoose.connection.close();
+  // }
 });
 
 // Create the sheet
@@ -67,9 +68,10 @@ router.post("/addSheet", async (req, res) => {
       message: "Unable to add the sheet. Try after sometime.",
     };
     res.status(500).json(returnData);
-  } finally {
-    await mongoose.connection.close();
   }
+  // finally {
+  //   await mongoose.connection.close();
+  // }
 });
 
 // Remove the sheet
@@ -100,9 +102,10 @@ router.delete("/removeSheet/:_id", async (req, res) => {
       message,
     };
     res.status(500).json(returnData);
-  } finally {
-    mongoose.connection.close();
   }
+  // finally {
+  //   mongoose.connection.close();
+  // }
 });
 
 // Update the sheet
@@ -135,9 +138,10 @@ router.put("/updateSheet/:_id", async (req, res) => {
       message,
     };
     res.status(500).json(returnData);
-  } finally {
-    mongoose.connection.close();
   }
+  // finally {
+  //   mongoose.connection.close();
+  // }
 });
 
 module.exports = router;
