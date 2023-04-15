@@ -27,11 +27,11 @@ const SheetsSchema = new mongoose.Schema({
   },
   createdBy: {
     type: Array,
-    required: true,
+    required: false,
   },
   updatedBy: {
     type: Array,
-    required: true,
+    required: false,
   },
 });
 

@@ -27,7 +27,7 @@ const CalculationSchema = new mongoose.Schema({
   },
   spendDate: {
     type: String,
-    required: true,
+    required: false,
   },
   createdDate: {
     type: Date,
@@ -39,11 +39,11 @@ const CalculationSchema = new mongoose.Schema({
   },
   createdBy: {
     type: Array,
-    required: true,
+    required: false,
   },
   updatedBy: {
     type: Array,
-    required: true,
+    required: false,
   },
 });
 

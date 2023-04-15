@@ -5,9 +5,10 @@ const Calculation = require("../models/calculation.model.js");
 const router = express.Router();
 
 // Get all users
-router.get("/getAll", async (req, res) => {
+router.get("/getAll/:_id", async (req, res) => {
   try {
-    const expenses = await Calculation.find();
+    const id = req.params._id;
+    const expenses = await Calculation.find({ sheetId: id });
     res.json(expenses);
   } catch (err) {
     console.error(err);
