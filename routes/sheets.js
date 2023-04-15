@@ -16,6 +16,40 @@ router.get("/getAll", async (req, res) => {
   }
 });
 
+// Delete the sheet
+
+router.get("/getSheet/:_id", async (req, res) => {
+  try {
+    const id = req.params._id;
+    const sheets = await Sheets.findOne({ _id: id });
+    if (!sheets) {
+      return res.status(404).json({
+        success: false,
+        message: "Sheet not found.",
+      });
+    }
+    const returnData = {
+      success: true,
+      message: "Sheet fetched successfully.",
+      data: sheets,
+    };
+    res.status(200).json(returnData);
+  } catch (err) {
+    console.error(err);
+    let message = "Unable to delete the sheet. Try after sometime.";
+    if (err.name === "CastError") {
+      message = "Invalid ID format.";
+    }
+    const returnData = {
+      success: false,
+      message,
+    };
+    res.status(500).json(returnData);
+  } finally {
+    mongoose.connection.close();
+  }
+});
+
 // Create the sheet
 router.post("/addSheet", async (req, res) => {
   try {
