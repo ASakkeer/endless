@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/getAll/:_id", async (req, res) => {
   try {
     const id = req.params._id;
-    const expenses = await Calculation.find({ sheetId: id });
+    const expenses = await Calculation.find({ sheetId: id }).sort({ createdDate: 'desc' });
     res.json(expenses);
   } catch (err) {
     console.error(err);
